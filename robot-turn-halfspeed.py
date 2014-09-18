@@ -86,17 +86,17 @@ while True:
     # Main Loop
     # Def:
     # tim.sim[0] = Sim Time
-    # TURNING FULL SPEED CLOCKWISE
-    i = i + 1
+    # ROBOT TURN HALFSPEED COUNTERCLOCKWISE
+    i = i + .5
  
     # Sleeps
     timeSleep = tim.sim[0] + .05
     while(tim.sim[0] < timeSleep):
         [status, framesize] = t.get(tim, wait=False, last=True)
 
-    buff = dyn.movePacket(-1,0)
+    buff = dyn.movePacket(.5,0)
     ref = ser.serial_sim(r,ref,buff)
-    buff = dyn.movePacket(1,1)
+    buff = dyn.movePacket(-.5,1)
     ref = ser.serial_sim(r,ref,buff)  
 
     if (i<645):

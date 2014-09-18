@@ -94,9 +94,9 @@ while True:
     while(tim.sim[0] < timeSleep):
         [status, framesize] = t.get(tim, wait=False, last=True)
 
-    buff = dyn.movePacket(-1,0)
+    buff = dyn.movePacket(1,0)
     ref = ser.serial_sim(r,ref,buff)
-    buff = dyn.movePacket(1,1)
+    buff = dyn.movePacket(-1,1)
     ref = ser.serial_sim(r,ref,buff)  
 
     if (i<645):
