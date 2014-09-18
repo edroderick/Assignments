@@ -86,21 +86,28 @@ while True:
     # Main Loop
     # Def:
     # tim.sim[0] = Sim Time
-	
-    
-    
-    #print 'Sim Time = ', tim.sim[0]
-    a = tim.sim[0]
-
+    i = i + 1
+ 
     # Sleeps
     timeSleep = tim.sim[0] + .05
     while(tim.sim[0] < timeSleep):
-	[status, framesize] = t.get(tim, wait=False, last=True)
-#   print a, abs(.05 - (tim.sim[0] - a))
+        [status, framesize] = t.get(tim, wait=False, last=True)
 
-    buff = dyn.movePacket(0xFE, 0X07, 0X03, 0x08, 0x09, 0X01)
+    buff = dyn.movePacket(1,0)
     ref = ser.serial_sim(r,ref,buff)
-    r.put(ref)
+    buff = dyn.movePacket(-1,1)
+    ref = ser.serial_sim(r,ref,buff)  
+
+    if (i<482):
+        pass
+    else:
+        buff = dyn.movePacket(0,0)
+        ref = ser.serial_sim(r,ref,buff)
+        buff = dyn.movePacket(0,1)
+        ref = ser.serial_sim(r,ref,buff) 
+        break
+
+    
 
 #-----------------------------------------------------
 #--------[ Do not edit below ]------------------------

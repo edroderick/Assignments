@@ -7,19 +7,18 @@ def calcChecksum(Packet): #do not include checksum when calling
 	for x in range(len(Packet)):
 		if x>1:
 			checksum = checksum + Packet[x]
-			print checksum
 
 	checksum = ~checksum
 	checksum &= 0xFF
 	Packet.append(checksum)
 	return Packet
 	
-def movePacket(velocity): #input ranges from +1 to -1, +forward/CW; -reverse/CCW
+def movePacket(velocity, ID): #input ranges from +1 to -1, +forward/CW; -reverse/CCW
 	#ID, length, instr, address1, address2, 
-		
+	instr = 0x20
+	length = 0x02
 
 	velocity = int(1023*velocity)
-		
 	
 	if velocity < 0:
 		direction = 0
@@ -37,12 +36,7 @@ def movePacket(velocity): #input ranges from +1 to -1, +forward/CW; -reverse/CCW
 	byte1 = byte1>>8	
 	byte2 = packet&0xFF
 
-	print byte1
-	print byte2
+	packet = calcChecksum([0XFF, 0XFF, ID, length, instr, byte2, byte1])
 
-	#packet = calcChecksum([0XFF, 0XFF, ID, length, instr, address1, address2, byte1, byte2])
-	#print packet	
-	
 	return packet
 
-movePacket(1)
