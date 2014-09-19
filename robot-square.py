@@ -87,37 +87,43 @@ while True:
     # Def:
     # tim.sim[0] = Sim Time
     # ROBOT TURN SQUARE CLOCKWISE
-    i = i + 1
-    if ((i % 300) == 0):
-        i = 1
-
     # Sleeps
     timeSleep = tim.sim[0] + .05
     while(tim.sim[0] < timeSleep):
         [status, framesize] = t.get(tim, wait=False, last=True)
+    
+    if (i==0): #start counter for 4 laps
+        a = 1
 
+    i = i + 1
 
-    if(i<100):  #forward      
+    if ((i%328)==0): #reset loop counter each lap
+        i=1
+        a = a+1
+
+    if (i<200):
 	A = 1
-        B = 1
-    if (i>=100) and (i<150): #slow down to prevent "bucking"
-	A = A - 2/50
-	B = B - 2/50
+	B = 1
 
-    if (i>=150) and (i<175): #slow down to prevent "bucking"
-	pass
+    if (i>=200) and (i<328):
+	A = .325
+	B = 1
 
-    if (i>=175) and (i<212): #turn
-        A = -1
-        B = 1	    
-    if (i>=212): #stop
-	A = 0 #A + 1/50
-	B = 0 #B - 1/50
+    if (i>328):
+	A = 1
+	B = 1
 
     buff = dyn.movePacket(A,0)
     ref = ser.serial_sim(r,ref,buff)
     buff = dyn.movePacket(B,1)
     ref = ser.serial_sim(r,ref,buff)  
+
+    if ((a%16)==0):
+        buff = dyn.movePacket(0,0)
+        ref = ser.serial_sim(r,ref,buff)
+        buff = dyn.movePacket(0,1)
+        ref = ser.serial_sim(r,ref,buff)  
+        break
 
 #-----------------------------------------------------
 #--------[ Do not edit below ]------------------------
