@@ -107,9 +107,6 @@ while True:
         motor2 = -1
     else:
         motor2 = controller.mot2
-    
-    print motor1
-    print motor2
 
     buff = dyn.movePacket(motor1,0)
     ref = ser.serial_sim(r,ref,buff)
