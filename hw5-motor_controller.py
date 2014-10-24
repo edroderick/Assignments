@@ -70,20 +70,12 @@ while (True):
 	#if (dTheta > 0):
 	controller.mot1 = dTheta
 	controller.mot2 = -1*dTheta
-        '''
-	#if error is negative, turn to the left by a factor of dTheta
-	if (dTheta > 0):
-	    controller.mot1 = -1*dTheta
-	    controller.mot2 = dTheta
-        '''
 
 	# negative values correspond to no color seen. Will not move. Overrides any previously assigned values
         if (thetacontroller.error_x == -1) and (thetacontroller.error_y == -1):
 	    controller.mot1 = 0
 	    controller.mot2 = 0
 
-        print controller.mot1
-        print controller.mot2
 	c.put(controller)
 
 

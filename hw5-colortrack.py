@@ -79,7 +79,7 @@ print '======================================'
 while True:
     # Get Frame
     [status, framesize] = t.get(tim, wait=False, last=True)
-    print tim.sim[0]
+    #test = tim.sim[0]
     img = np.zeros((newx,newy,3), np.uint8)
     c_image = img.copy()
     vid = cv2.resize(c_image,(newx,newy))
@@ -149,10 +149,22 @@ while True:
     thetacontroller.error_x = cx
     thetacontroller.error_y = cy
     d.put(thetacontroller)
+
     [status, framesize] = t.get(tim, wait=False, last=True)
-    print 'time2' , tim.sim[0]
+    #used following print, piped to txt file to track runtime of image processing
+    #print 'timestart',test,'timeend' , tim.sim[0]
+
+    #print position error and time for graphing, output piped to log.txt
+    print 'time', tim.sim[0], 'error_x', error_x
+
     # Sleeps
-    time.sleep(.1)
+    simtime = tim.sim[0]
+    timeSleep = simtime + .1
+    while(simtime < timeSleep):
+        [status, framesize] = t.get(tim, wait=False, last=True)
+        simtime = tim.sim[0]
+
+    
     
 #-----------------------------------------------------
 #--------[ Do not edit below ]------------------------
