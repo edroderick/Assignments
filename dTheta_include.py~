@@ -42,7 +42,7 @@ class CONTROLLER_REF(Structure):
     _pack_ = 1
     _fields_ = [("error_x",	c_double),
 		("error_y",     c_double)]
-
+		("
 
 #class HUBO_REF(Structure):
 #    _pack_ = 1

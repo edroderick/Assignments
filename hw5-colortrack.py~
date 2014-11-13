@@ -145,8 +145,9 @@ while True:
     error_y = height/2 - cy
 
     #send calculated data to dTheta channel
-    thetacontroller.error_x = error_x
-    thetacontroller.error_y = error_y
+    thetacontroller.dTheta = error_x 
+    thetacontroller.error_x = cx
+    thetacontroller.error_y = cy
     d.put(thetacontroller)
 
     [status, framesize] = t.get(tim, wait=False, last=True)
