@@ -38,7 +38,8 @@ import subprocess
 import optparse
 import yaml
 import numpy as np
-import controller_include as ci
+import controller_include2 as ci
+import ach
 
 
 def rad2dyn(rad):
@@ -49,8 +50,8 @@ def dyn2rad(en):
 
 def main(settings):
 
-    c = ach.Channel(ci.CONTROLLER_REF_NAME)
-    controller = ci.CONTROLLER_REF()
+    c = ach.Channel(ci.DYNO_REF_NAME)
+    controller = ci.DYNO_REF()
     c.flush()
 
     portName = settings['port']
@@ -79,7 +80,7 @@ def main(settings):
       print "...Done"
     
     for actuator in myActuators:
-        actuator.moving_speed = 200
+        actuator.moving_speed = 50
         actuator.synchronized = True
         actuator.torque_enable = True
         actuator.torque_limit = 800
@@ -88,53 +89,39 @@ def main(settings):
     # Randomly vary servo position within a small range
     print myActuators
     print "Hubo-Ach neck server active"
-#    print "Servo \tPosition"
-#    enc = 0.0;
-#    cmd = -.8;
+    enc1 = dyn2rad(0)
+    enc2 = dyn2rad(0)
     while True:
-        # Get the current feed-forward (state) 
-        [statuss, framesizes] = c.get(controller, wait=True, last=True)
-
-	dTheta1 = controller.mot1
-	dTheta2 = controller.mot2
-
-        # Get current motor encoder positions
-        for actuator in myActuators:
-            actuator.read_all()
-            time.sleep(0.01)
-            if ( actuator.id == 2):
-                enc1 = dyn2rad(actuator.current_position)
-	    if ( actuator.id == 3):
-		enc2 = dyn2rad(actuator.current_position)
-
-	cmd1 = enc1 + dTheta1
-	cmd2 = enc2 + dTheta2
-
-	#check if commanded angles are outside of the possible rotation for motor, motor config handles staying within defined range
-	if (cmd1 > 330):
-		cmd1 = 330
-	elif (cmd1 < 0):
-		cmd1 = 0
-
-	if (cmd2 > 330):
-		cmd1 = 330
-	elif (cmd2 < 0):
-		cmd2 = 0
-
-	#set both motors to new goal positions
-        for actuator in myActuators:
-            if ( actuator.id == 2):
-                actuator.goal_position = rad2dyn(cmd1)
+		# Get the current feed-forward (state) 
+		[statuss, framesizes] = c.get(controller, wait=True, last=True)
         
-            if ( actuator.id == 3):
-		actuator.goal_position = rad2dyn(cmd2)
+		dThetaX = controller.dThetaX
+		print 'dthetaX ' , dThetaX
+		dThetaY = controller.dThetaY
+		print 'dThetaY ', dThetaY
 
-	    net.synchronize()
+		# Get current motor encoder positions
+		for actuator in myActuators:
+			actuator.read_all()
+			time.sleep(0.01)
+			if ( actuator.id == 2):
+				enc1 = dyn2rad(actuator.current_position)
+			if ( actuator.id == 3):
+				enc2 = dyn2rad(actuator.current_position)
+				
+		cmd1 = enc1 + dThetaY
+		cmd2 = enc2 + dThetaX
+		#set both motors to new goal positions
+		for actuator in myActuators:
+			if ( actuator.id == 2):
+				actuator.goal_position = rad2dyn(cmd1)
+        
+			if ( actuator.id == 3):
+				actuator.goal_position = rad2dyn(cmd2)
 
+		net.synchronize()
+		print 'cmd1 = ', cmd1, '  enc1 = ', enc1, ' cmd2= ', cmd2, ' enc2 = ', enc2
 
-#	print encoder.enc[ha.NKY], " : ", encoder.enc[ha.NK1], " : ", encoder.enc[ha.NK2]
-        print 'cmd1 = ', cmd1, '  enc1 = ', enc1, ' cmd2= ', cmd2, ' enc2 = ', enc2
-        time.sleep(1)
 
 def validateInput(userInput, rangeMin, rangeMax):
     '''
